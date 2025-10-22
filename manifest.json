@@ -1,0 +1,35 @@
+{
+  "name": "Gmail AI Reply Assistant",
+  "description": "AI-powered email reply assistant for Gmail",
+  "version": "1.0.1",
+  "manifest_version": 3,
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_title": "Gmail AI Reply",
+    "default_icon": "assets/icon.png"
+  },
+  "background": {
+    "service_worker": "extension/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*"
+      ],
+      "js": ["extension/config.js", "extension/content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "icons": {
+    "128": "assets/icon.png"
+  }
+}

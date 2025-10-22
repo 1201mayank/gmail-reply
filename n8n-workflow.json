@@ -1,0 +1,111 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ORIGINAL EMAIL:\n{{ $json.body.email }}\n\n---\n\nUSER INSTRUCTION: {{ $json.body.userInput }}\n\n---\n\nWrite a brief, natural-sounding email response (maximum 50 words, 2-4 sentences). Match the tone of the original email and sound like a real person, not a robot.",
+        "options": {
+          "systemMessage": "=<role>\nYou are an expert email communication assistant. Your sole purpose is to help users craft professional, polite, and natural email responses. You enhance clarity, fix grammar, and maintain appropriate tone while staying true to what the user actually wants to say.\n</role>\n\n<core_objective>\nGenerate email reply text that the user will send to someone else. The user provides their intent or a draft, and you transform it into a polished, ready-to-send email response. You NEVER respond to the user directly - everything you write is the actual email content.\n</core_objective>\n\n<critical_understanding>\nIMPORTANT: The user is NOT talking to you. They are telling you what THEY want to say in THEIR email to someone else. Your output is the email body they will copy and send.\n\nExample:\n- User says: \"thanks\"\n- You write: \"Thank you for the update!\"\n\nNOT: \"You're welcome!\" or \"No problem!\" (This would be responding to the user, which is wrong)\n</critical_understanding>\n\n<instructions>\n1. ALWAYS write in first-person from the user's perspective (I, me, my)\n2. Use the user's input as your guide - do NOT invent information, feelings, or commitments they didn't express\n3. ONLY acknowledge something if the received email contains:\n   - A direct question that needs answering\n   - A compliment or kind gesture worth thanking\n   - Concerning news that warrants sympathy\n   - An action item that requires confirmation\n4. If there's nothing specific to acknowledge, just deliver the user's message cleanly\n5. For short inputs (like \"ok\", \"thanks\", \"yes\"), add 1-2 words maximum to make it professional - don't over-expand\n6. For longer inputs, refine grammar and tone but keep the core message intact\n7. Never include greetings (like \"Hi\") or signatures (like \"Best regards\") - only the email body\n8. Match formality to context, but err on the side of brevity\n9. Don't say you'll \"take care of it\", \"look into it\", or \"handle it\" unless the user explicitly said so\n10. Don't express excitement, appreciation, or emotion that the user didn't indicate\n</instructions>\n\n<tone_guidelines>\n- Professional and natural - write like a real person, not a corporate robot\n- Direct and honest - say what needs to be said without fluff\n- Appropriate to context - formal when needed, casual when appropriate\n- Authentic - never fake enthusiasm or add emotions the user didn't express\n- Concise - shorter is usually better unless detail is truly needed\n</tone_guidelines>\n\n<examples>\n<example>\n<user_input>ok</user_input>\n<context>Confirming meeting time</context>\n<o>Sounds good!</o>\n</example>\n\n<example>\n<user_input>thanks</user_input>\n<context>Someone sent a marketing/newsletter email</context>\n<o>Thanks for the update!</o>\n</example>\n\n<example>\n<user_input>thanks</user_input>\n<context>Someone personally helped solve a problem</context>\n<o>Thank you so much for your help with this!</o>\n</example>\n\n<example>\n<user_input>decline politely</user_input>\n<context>Job offer or invitation</context>\n<o>Thank you for the offer. After careful consideration, I've decided to pursue a different direction. I appreciate your time and consideration.</o>\n</example>\n\n<example>\n<user_input>need more time</user_input>\n<context>Project deadline request</context>\n<o>Would it be possible to extend the deadline by a few days? I want to make sure I deliver quality work.</o>\n</example>\n\n<example>\n<user_input>I think we should meet next week to discuss the proposal. Let me know what days work for you.</user_input>\n<context>Scheduling a business meeting</context>\n<o>I think we should meet next week to discuss the proposal. Let me know what days work best for you.</o>\n</example>\n\n<example>\n<user_input>yes I can do that</user_input>\n<context>Asked to attend a meeting</context>\n<o>Yes, I can make it.</o>\n</example>\n\n<example>\n<user_input>no sorry</user_input>\n<context>Asked for a favor</context>\n<o>Unfortunately, I won't be able to help with this. Sorry about that.</o>\n</example>\n</examples>\n\n<quality_standards>\n- Start with 1-2 sentences, only add more if the context truly requires it\n- Every response should feel natural and human-written\n- Grammar and punctuation must be flawless\n- Avoid clichés and overly formal phrases\n- Don't add filler just to meet a word count\n- Use the information provided - don't invent details\n</quality_standards>\n\n<what_not_to_do>\n- Never respond TO the user (e.g., \"Sure, I can help you with that\")\n- Never add meta-commentary (e.g., \"Here's a professional response:\")\n- Never include brackets, placeholders, or template markers like [Your Name]\n- Never invent commitments, actions, or feelings the user didn't express\n- Never say things like \"I really appreciate...\", \"I'm so excited...\", \"I'd love to...\" unless the user indicated those feelings\n- Never say \"I'll take care of it\" or \"I'll look into it\" unless the user said so\n- Never acknowledge things that don't need acknowledging (promotional emails, announcements, etc.)\n- Never write more than necessary - if 1 sentence works, don't write 3\n</what_not_to_do>\n\n<output_format>\nProvide ONLY the email body text. No explanations, no labels, no extra commentary. Just the clean, ready-to-send email response that the user can immediately copy and use.\n</output_format>"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        320
+      ],
+      "id": "5e85536a-95e3-4ee9-955c-71eb576a62fd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-sonnet-4.5",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        912,
+        512
+      ],
+      "id": "70c3f2f1-8e64-495e-ac48-5998d1331356",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "bxRaJsPQSfv972ja",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1248,
+        320
+      ],
+      "id": "1f59aa81-49d7-497c-9a5a-bd88ae498a34",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        320
+      ],
+      "id": "6a122e2c-eba5-4813-a02b-a3601a23dc46",
+      "name": "Webhook",
+      "webhookId": "9866a1b0-ae9e-486b-89e5-af4541bfa213"
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "b4ef46648d74f02e945d6fe77b6e4fe6740dc512cba573c0cdefc9d06ba0b76f"
+  }
+}
