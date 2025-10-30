@@ -2,5 +2,5 @@
 // Replace YOUR_WEBHOOK_URL with your actual n8n webhook URL
 
 const CONFIG = {
-  webhookUrl: 'YOUR_WEBHOOK_URL_HERE'
+  webhookUrl: 'http://localhost:5678/webhook-test/9866a1b0-ae9e-486b-89e5-af4541bfa213'
 };
